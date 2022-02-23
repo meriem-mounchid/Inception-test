@@ -7,33 +7,25 @@ sudo usermod -aG docker vagrant
 docker pull debian
 docker run debian
 docker run -it -p 0.0.0.0:80:80 --name mydebian debian
+# docker run -it -p 0.0.0.0:80:443 --name mydebian debian
+# docker run -it -p 0.0.0.0:80:80 -p 0.0.0.0:443:443 --name mydebian debian
 docker start NAME
 docker exec -it NAME sh
 
-#### Install VIM ####
+#### Install VIM Nginx OpensSSL ####
 apt-get update
-apt-get install -y vim
-
-#### Instal Nginx on Debian container ####
-apt-get update
-apt-get install -y nginx
+apt-get install -y vim nginx openssl
 # Backup:
 cp /etc/nginx/nginx.conf /etc/nginx/nginx.backup-tls
 vim /etc/nginx/nginx.conf
-# ssl_protocols TLSv1.2 TLSv1.3;
-
 # Nginx configuration is valid:
 nginx -t
-# Reload:
 service nginx reload
 service nginx start
 service nginx status
-#### Instal OpenSSL ####
-apt-get update
-apt-get install -y openssl
-mkdir certificate
-cd certificate
-touch nginx.key nginx-certificate.crt
+#### Certif OpenSSL ####
+mkdir /etc/nginx/certificate
+touch /etc/nginx/certificate/nginx.key /etc/nginx/certificate/nginx-certificate.crt
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/certificate/nginx.key -out /etc/nginx/certificate/nginx-certificate.crt
 
 vim /etc/nginx/sites-available/default
