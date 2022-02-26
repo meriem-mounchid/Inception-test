@@ -16,8 +16,8 @@ docker exec -it NAME sh
 apt-get update
 apt-get install -y vim nginx openssl
 # Backup:
-cp /etc/nginx/nginx.conf /etc/nginx/nginx.backup-tls
-vim /etc/nginx/nginx.conf
+# cp /etc/nginx/nginx.conf /etc/nginx/nginx.backup-tls
+# vim /etc/nginx/nginx.conf
 # Nginx configuration is valid:
 nginx -t
 service nginx reload
@@ -45,6 +45,8 @@ server {
         }
 }
 service nginx restart
+# server_name  localhost;
+
 
 
 
