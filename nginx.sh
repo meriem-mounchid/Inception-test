@@ -5,16 +5,14 @@ sudo usermod -aG docker vagrant
 
 #### Install Debian Conteiner ####
 docker pull debian
-docker run debian
-docker run -it -p 0.0.0.0:80:80 --name mydebian debian
-# docker run -it -p 0.0.0.0:80:443 --name mydebian debian
-# docker run -it -p 0.0.0.0:80:80 -p 0.0.0.0:443:443 --name mydebian debian
+docker run -it -p 0.0.0.0:443:443 --name mynginx debian
 docker start NAME
 docker exec -it NAME sh
 
 #### Install VIM Nginx OpensSSL ####
 apt-get update
-apt-get install -y vim nginx openssl
+apt-get install -y vim nginx
+#apt-get install -y vim nginx openssl
 # Backup:
 # cp /etc/nginx/nginx.conf /etc/nginx/nginx.backup-tls
 # vim /etc/nginx/nginx.conf
@@ -23,10 +21,12 @@ nginx -t
 service nginx reload
 service nginx start
 service nginx status
-#### Certif OpenSSL ####
+#p### Certif OpenSSL ####
 mkdir /etc/nginx/certificate
 touch /etc/nginx/certificate/nginx.key /etc/nginx/certificate/nginx-certificate.crt
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/certificate/nginx.key -out /etc/nginx/certificate/nginx-certificate.crt
+#RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/certificate/nginx.key -out /etc/nginx/certificate/nginx-certificate.crt
+#RUN openssl req -x509 -nodes -days 365 -subj "/C=MA/ST=KH/O=1337, Inc./CN=mmounchi.42.fr"  -newkey rsa:2048 -keyout nginx-selfsigned.key -out nginx-selfsigned.crt;
 
 vim /etc/nginx/sites-available/default
 server {
@@ -46,22 +46,16 @@ server {
 }
 service nginx restart
 # server_name  localhost;
-
-
-
-
-
-
-
-
-
-
-
+#scp nginx.key nginx-certificate.crt default vagrant@10.12.100.83:~
+docker build -t myapp .
+docker run -p 443:443 -d --name mynginx myapp
 # docker images
 # docker ps -a
-# docker rmi -f
-# docker rm -f ID
+# docker rmi -fdocker run -p 443:443 -d --name mynginx myapp
 
+# docker rm -f ID
+docker rm -f $(docker ps -a -q)
+docker rmi $(docker images -a -q)
 ### TEST ###
 docker pull mysql
 docker run -d mysql:latest
